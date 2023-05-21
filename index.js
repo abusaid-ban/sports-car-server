@@ -43,16 +43,20 @@ async function run() {
         // new toys add
 
         app.get('/myToys', async (req, res) => {
-            // console.log(req.query.email);
+          
             const getEmail = req.query.email;
             console.log(getEmail);
             const query = {email : getEmail}
-            // let query = {};
-            // if (req.query?.email) {
-            //     query = { email: req.query.email }
-            // }
             const result = await productCollection.find(query).toArray();
             res.send(result);
+        })
+        app.get('/myToys/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await productCollection.findOne(query);
+            res.send(result);
+          
+           
         })
 
 
@@ -63,6 +67,15 @@ async function run() {
             res.send(result);
 
         })
+       
+        app.delete('/myToys/:id',async(req,res)=>{
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await productCollection.deleteOne(query);
+            res.send(result);
+
+        })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
