@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 
-console.log(process.env.DB_PASS)
+// console.log(process.env.DB_PASS)
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.vmq30zn.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -41,15 +41,20 @@ async function run() {
             res.send(result);
         })
         // new toys add
-        app.get('/products', async (req, res) => {
-            console.log(req.query.email);
-            let query = {};
-            if (req.query?.email) {
-                query = { email: req.query.email }
-            }
+
+        app.get('/myToys', async (req, res) => {
+            // console.log(req.query.email);
+            const getEmail = req.query.email;
+            console.log(getEmail);
+            const query = {email : getEmail}
+            // let query = {};
+            // if (req.query?.email) {
+            //     query = { email: req.query.email }
+            // }
             const result = await productCollection.find(query).toArray();
             res.send(result);
         })
+
 
         app.post('/products', async (req, res) => {
             const newProducts = req.body;
@@ -67,10 +72,6 @@ async function run() {
     }
 }
 run().catch(console.dir);
-
-
-
-
 
 app.get('/', (req, res) => {
     res.send('Sports toys is running');
