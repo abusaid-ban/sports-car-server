@@ -43,10 +43,10 @@ async function run() {
         // new toys add
 
         app.get('/myToys', async (req, res) => {
-          
+
             const getEmail = req.query.email;
             console.log(getEmail);
-            const query = {email : getEmail}
+            const query = { email: getEmail }
             const result = await productCollection.find(query).toArray();
             res.send(result);
         })
@@ -55,8 +55,8 @@ async function run() {
             const query = { _id: new ObjectId(id) }
             const result = await productCollection.findOne(query);
             res.send(result);
-          
-           
+
+
         })
 
 
@@ -67,8 +67,24 @@ async function run() {
             res.send(result);
 
         })
-       
-        app.delete('/myToys/:id',async(req,res)=>{
+        app.put('/myToys/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updatedToys = req.body;
+            const Toys = {
+                $set:{
+                    price: updatedToys.price,
+                    quantity: updatedToys.quantity,
+                    details: updatedToys.details,
+                }
+            }
+            const result = await productCollection.updateOne(filter,Toys,options)
+            res.send(result);
+
+        })
+
+        app.delete('/myToys/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) }
             const result = await productCollection.deleteOne(query);
